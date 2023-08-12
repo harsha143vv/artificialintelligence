@@ -1,0 +1,41 @@
+% Defining facts in the database
+dob(john, date(1990, 5, 15)).
+dob(emma, date(1985, 10, 25)).
+dob(susan, date(1998, 3, 7)).
+dob(david, date(2002, 8, 12)).
+dob(olivia, date(1993, 12, 1)).
+
+% Query to find the DOB of a person
+get_dob(Person, DateOfBirth) :-
+    dob(Person, DateOfBirth).
+
+% Query to find all people born after a certain year
+born_after_year(Year, Person) :-
+    dob(Person, date(BirthYear, _, _)),
+    BirthYear > Year.
+
+% Query to find all people born in a specific month
+born_in_month(Month, Person) :-
+    dob(Person, date(_, Month, _)).
+
+% Query to find all people born in a specific year
+born_in_year(Year, Person) :-
+    dob(Person, date(Year, _, _)).
+
+% Query to find the age of a person
+age(Person, Age) :-
+    dob(Person, DateOfBirth),
+    get_time(Stamp),
+    stamp_date_time(Stamp, DateTime, local),
+    DateOfBirth = date(Year, Month, Day),
+    DateTime = date(NowYear, NowMonth, NowDay),
+    Age is NowYear - Year - ( (NowMonth, NowDay) < (Month, Day) ).
+
+% Example queries
+/*
+?- get_dob(john, DOB).
+?- born_after_year(1995, Person).
+?- born_in_month(5, Person).
+?- born_in_year(1990, Person).
+?- age(john, Age).
+*/
