@@ -1,0 +1,7 @@
+<h3 id="section-1">Section 1</h3>
+<p>This is the content of section 1.</p>
+<p><a href="#section-2">Jump to Section 2</a></p>
+
+<h3 id="section-2">Section 2</h3>
+<p>This is the content of section 2.</p>
+<p><a href="#section-1">Jump to Section 1</a></p>
