@@ -1,0 +1,83 @@
+class State:
+    def __init__(self, missionaries_left, cannibals_left, boat, missionaries_right, cannibals_right):
+        self.missionaries_left = missionaries_left
+        self.cannibals_left = cannibals_left
+        self.boat = boat
+        self.missionaries_right = missionaries_right
+        self.cannibals_right = cannibals_right
+        self.parent = None
+    
+    def is_valid(self):
+        if self.missionaries_left < 0 or self.cannibals_left < 0 or self.missionaries_right < 0 or self.cannibals_right < 0:
+            return False
+        if self.missionaries_left > 3 or self.cannibals_left > 3 or self.missionaries_right > 3 or self.cannibals_right > 3:
+            return False
+        if self.missionaries_left != 0 and self.missionaries_left < self.cannibals_left:
+            return False
+        if self.missionaries_right != 0 and self.missionaries_right < self.cannibals_right:
+            return False
+        return True
+    
+    def is_goal(self):
+        return self.missionaries_left == 0 and self.cannibals_left == 0
+    
+    def generate_successors(self):
+        successors = []
+        if self.boat == 'left':
+            for m in range(3):
+                for c in range(3):
+                    if 1 <= m + c <= 2:
+                        new_state = State(self.missionaries_left - m, self.cannibals_left - c, 'right',
+                                          self.missionaries_right + m, self.cannibals_right + c)
+                        if new_state.is_valid():
+                            new_state.parent = self
+                            successors.append(new_state)
+        else:
+            for m in range(3):
+                for c in range(3):
+                    if 1 <= m + c <= 2:
+                        new_state = State(self.missionaries_left + m, self.cannibals_left + c, 'left',
+                                          self.missionaries_right - m, self.cannibals_right - c)
+                        if new_state.is_valid():
+                            new_state.parent = self
+                            successors.append(new_state)
+        return successors
+
+def depth_first_search(initial_state):
+    visited = set()
+    stack = [initial_state]
+
+    while stack:
+        current_state = stack.pop()
+        if current_state.is_goal():
+            return current_state
+        visited.add((current_state.missionaries_left, current_state.cannibals_left, current_state.boat))
+        successors = current_state.generate_successors()
+        for successor in successors:
+            if (successor.missionaries_left, successor.cannibals_left, successor.boat) not in visited:
+                stack.append(successor)
+    
+    return None
+
+def print_solution(solution_state):
+    path = []
+    current_state = solution_state
+    while current_state:
+        path.append((current_state.missionaries_left, current_state.cannibals_left, current_state.boat))
+        current_state = current_state.parent
+    path.reverse()
+    
+    for state in path:
+        missionaries_left, cannibals_left, boat = state
+        missionaries_right = 3 - missionaries_left
+        cannibals_right = 3 - cannibals_left
+        print(f"Left: {missionaries_left}M {cannibals_left}C | Right: {missionaries_right}M {cannibals_right}C | Boat: {boat}")
+
+initial_state = State(3, 3, 'left', 0, 0)
+solution_state = depth_first_search(initial_state)
+
+if solution_state:
+    print("Solution found:")
+    print_solution(solution_state)
+else:
+    print("No solution found.")
