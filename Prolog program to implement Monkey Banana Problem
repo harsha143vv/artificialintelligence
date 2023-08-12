@@ -1,0 +1,39 @@
+% State: current state of the monkey and bananas
+% monkey(Location, OnCrate, HasBananas)
+% Location: floor or box
+% OnCrate: true or false
+% HasBananas: true or false
+
+% Initial state
+initial_state(monkey(floor, false, false)).
+
+% Final state: monkey has bananas on the box
+final_state(monkey(_, true, true)).
+
+% Actions: move, climb, grasp, ungrasp
+
+% Action: move the monkey
+% move(From, To, State_before, State_after)
+move(floor, box, monkey(floor, false, HasBananas), monkey(box, false, HasBananas)).
+move(box, floor, monkey(box, false, HasBananas), monkey(floor, false, HasBananas)).
+
+% Action: climb on the box
+climb(monkey(Loc, false, HasBananas), monkey(Loc, true, HasBananas)).
+
+% Action: grasp the bananas
+grasp(monkey(Loc, OnCrate, false), monkey(Loc, OnCrate, true)).
+
+% Action: ungrasp the bananas
+ungrasp(monkey(Loc, OnCrate, true), monkey(Loc, OnCrate, false)).
+
+% Perform a sequence of actions to solve the problem
+% solve(State, Actions)
+solve(State, []) :- final_state(State).
+solve(State1, [Action | RestActions]) :-
+    move(Action, State1, State2),
+    solve(State2, RestActions).
+
+% Example query to solve the problem
+/*
+?- initial_state(InitialState), solve(InitialState, Actions).
+*/
