@@ -1,0 +1,15 @@
+% Defining diet suggestions based on diseases
+diet_suggestion(diabetes, 'Low-carb diet with controlled sugar intake').
+diet_suggestion(hypertension, 'Low-sodium diet with plenty of fruits and vegetables').
+diet_suggestion(cholesterol, 'Low-fat diet with whole grains and lean protein').
+diet_suggestion(underweight, 'High-calorie diet with healthy fats and nutrient-rich foods').
+
+% Query to suggest a diet based on disease
+suggest_diet(Disease, Diet) :-
+    diet_suggestion(Disease, Diet).
+
+% Example queries
+/*
+?- suggest_diet(diabetes, Diet).
+?- suggest_diet(cholesterol, Diet).
+*/
