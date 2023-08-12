@@ -1,0 +1,29 @@
+% Defining facts in the database
+teaches(ms_smith, math101).
+teaches(mr_jones, cs101).
+teaches(mr_doe, bio101).
+teaches(ms_white, chem101).
+
+student(enzo, math101).
+student(anna, cs101).
+student(emma, bio101).
+student(oliver, chem101).
+
+% Query to find the teacher of a subject
+teacher_of_subject(SubjectCode, Teacher) :-
+    teaches(Teacher, SubjectCode).
+
+% Query to find the subjects taught by a teacher
+subjects_taught_by_teacher(Teacher, SubjectCode) :-
+    teaches(Teacher, SubjectCode).
+
+% Query to find the subjects of a student
+subjects_of_student(Student, SubjectCode) :-
+    student(Student, SubjectCode).
+
+% Example queries
+/*
+?- teacher_of_subject(math101, Teacher).
+?- subjects_taught_by_teacher(ms_smith, SubjectCode).
+?- subjects_of_student(anna, SubjectCode).
+*/
