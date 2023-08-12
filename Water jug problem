@@ -1,0 +1,40 @@
+from collections import deque
+
+def water_jug_problem(capacity_a, capacity_b, target):
+    visited = set()  # To keep track of visited states
+    queue = deque([(0, 0)])  # Initial state: both jugs are empty
+
+    while queue:
+        current_state = queue.popleft()
+        jug_a, jug_b = current_state
+
+        if jug_a == target or jug_b == target:
+            return current_state  # Found a solution
+
+        # Try all possible operations: fill, empty, pour
+        operations = [
+            (jug_a, 0),  # Empty jug A
+            (0, jug_b),  # Empty jug B
+            (capacity_a, jug_b),  # Fill jug A
+            (jug_a, capacity_b),  # Fill jug B
+            (jug_a - min(jug_a, capacity_b - jug_b), jug_b + min(jug_a, capacity_b - jug_b)),  # Pour A to B
+            (jug_a + min(capacity_a - jug_a, jug_b), jug_b - min(capacity_a - jug_a, jug_b)),  # Pour B to A
+        ]
+
+        for operation in operations:
+            if operation not in visited:
+                visited.add(operation)
+                queue.append(operation)
+
+    return None  # No solution found
+
+# Example usage
+jug_a_capacity = 4
+jug_b_capacity = 3
+target_amount = 2
+
+solution = water_jug_problem(jug_a_capacity, jug_b_capacity, target_amount)
+if solution:
+    print(f"Solution found: {solution[0]} gallons in Jug A, {solution[1]} gallons in Jug B.")
+else:
+    print("No solution found.")
