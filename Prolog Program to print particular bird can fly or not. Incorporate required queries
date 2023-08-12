@@ -1,0 +1,24 @@
+% Defining facts in the database
+can_fly(sparrow).
+can_fly(eagle).
+can_fly(albatross).
+cannot_fly(penguin).
+cannot_fly(ostrich).
+cannot_fly(kiwi).
+
+% Query to check if a bird can fly
+bird_can_fly(Bird) :-
+    can_fly(Bird).
+
+bird_can_fly(Bird) :-
+    cannot_fly(Bird),
+    !,
+    fail.
+
+bird_cannot_fly(Bird) :-
+    cannot_fly(Bird).
+
+bird_cannot_fly(Bird) :-
+    can_fly(Bird),
+    !,
+    fail.
