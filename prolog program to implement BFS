@@ -1,0 +1,51 @@
+% Defining edges in the graph
+edge(a, b, 5).
+edge(a, c, 3).
+edge(b, d, 2).
+edge(c, d, 4).
+edge(c, e, 6).
+edge(d, e, 1).
+edge(e, f, 7).
+
+% Best First Search algorithm
+best_first_search(Start, Goal, Path) :-
+    heuristic(Start, H),
+    best_first_search([node(Start, H, [])], Goal, Path).
+
+best_first_search([node(Goal, _, Path) | _], Goal, Path).
+best_first_search([node(State, _, Path) | Open], Goal, FinalPath) :-
+    expand(State, Children),
+    insert_all(Children, Open, NewOpen),
+    best_first_search(NewOpen, Goal, FinalPath).
+
+% Expanding a node to its children
+expand(State, Children) :-
+    findall(Child, (edge(State, Child, _); edge(Child, State, _)), Children).
+
+% Insert a list of nodes into the open list while maintaining the order of their heuristics
+insert_all([], Open, Open).
+insert_all([Node | RestNodes], Open, NewOpen) :-
+    insert(Node, Open, TempOpen),
+    insert_all(RestNodes, TempOpen, NewOpen).
+
+% Insert a node into the open list while maintaining the order of heuristics
+insert(Node, [], [Node]).
+insert(node(State, H, Path), [node(State2, H2, Path2) | RestOpen], [node(State, H, Path) | [node(State2, H2, Path2) | RestOpen]]) :-
+    H =< H2,
+    insert(node(State, H, Path), RestOpen, RestOpen).
+insert(node(State, H, Path), [node(State2, H2, Path2) | RestOpen], [node(State2, H2, Path2) | NewRestOpen]) :-
+    H > H2,
+    insert(node(State, H, Path), RestOpen, NewRestOpen).
+
+% Defining heuristic values (for simplicity, using arbitrary values)
+heuristic(a, 10).
+heuristic(b, 5).
+heuristic(c, 7).
+heuristic(d, 3).
+heuristic(e, 2).
+heuristic(f, 0).
+
+% Example query
+/*
+?- best_first_search(a, f, Path).
+*/
