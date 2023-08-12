@@ -1,0 +1,25 @@
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D', 'E'],
+    'D': ['B', 'C', 'E'],
+    'E': ['C', 'D']
+}
+colors = ['Red', 'Green', 'Blue']
+def color_map(graph, region, color_assignment):
+    for color in colors:
+        is_safe = all(color_assignment[neighbor] != color for neighbor in graph[region])
+        if is_safe:
+            color_assignment[region] = color
+            return True
+    return False
+def solve_map_coloring(graph):
+    color_assignment = {}
+    for region in graph:
+        if not color_map(graph, region, color_assignment):
+            print("No solution exists.")
+            return
+    print("Solution:")
+    for region, color in color_assignment.items():
+        print(f"{region}: {color}")
+solve_map_coloring(graph)
