@@ -1,0 +1,25 @@
+% Defining rules and facts
+rule(bird(X) :- can_fly(X)).
+rule(can_fly(pigeon)).
+rule(can_fly(sparrow)).
+fact(has_feathers(pigeon)).
+fact(has_feathers(sparrow)).
+
+% Backward chaining inference
+infer(Goal) :-
+    fact(Goal).
+infer(Goal) :-
+    rule(Condition :- GoalList),
+    check_conditions(GoalList),
+    infer(Condition).
+
+% Check if all conditions for a rule are true
+check_conditions([]).
+check_conditions([Goal | RestGoals]) :-
+    infer(Goal),
+    check_conditions(RestGoals).
+
+% Example query to perform backward chaining
+/*
+?- infer(bird(X)).
+*/
