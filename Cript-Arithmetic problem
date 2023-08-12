@@ -1,0 +1,47 @@
+def is_valid_assignment(assignment, puzzle):
+    # Check if the assignment is valid for the puzzle
+    for word in puzzle:
+        value = 0
+        for char in word:
+            value = value * 10 + assignment[char]
+        if value == 0 or value != assignment[word[-1]]:
+            return False
+    return True
+
+def solve_cryptarithmetic(puzzle):
+    unique_chars = set(''.join(puzzle))
+    if len(unique_chars) > 10:
+        return None  # There are more than 10 unique characters, not solvable
+    
+    unique_chars = sorted(unique_chars)
+    
+    def backtrack(index, assignment):
+        if index == len(unique_chars):
+            if is_valid_assignment(assignment, puzzle):
+                return assignment
+            return None
+        
+        char = unique_chars[index]
+        for digit in range(10):
+            if digit not in assignment.values():
+                assignment[char] = digit
+                result = backtrack(index + 1, assignment)
+                if result:
+                    return result
+                assignment[char] = None
+        
+        return None
+    
+    initial_assignment = {char: None for char in unique_chars}
+    return backtrack(0, initial_assignment)
+
+# Example usage
+puzzle = ["SEND", "MORE", "MONEY"]
+solution = solve_cryptarithmetic(puzzle)
+
+if solution:
+    print("Solution:")
+    for char, digit in solution.items():
+        print(f"{char} = {digit}")
+else:
+    print("No solution found.")
