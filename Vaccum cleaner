@@ -1,0 +1,35 @@
+class VacuumCleaner:
+    def __init__(self, environment):
+        self.environment = environment
+        self.position = 0  # Start at position 0
+    
+    def sense(self):
+        return self.environment[self.position]
+    
+    def move(self, direction):
+        if direction == "left" and self.position > 0:
+            self.position -= 1
+        elif direction == "right" and self.position < len(self.environment) - 1:
+            self.position += 1
+    
+    def clean(self):
+        if self.environment[self.position] == "dirty":
+            self.environment[self.position] = "clean"
+            print(f"Cleaned cell {self.position}")
+    
+    def run(self):
+        print("Initial environment:", self.environment)
+        for _ in range(len(self.environment)):
+            if self.sense() == "dirty":
+                self.clean()
+            if self.position == 0:
+                self.move("right")
+            else:
+                self.move("left")
+            print("Current environment:", self.environment)
+            print("Moving to position:", self.position)
+
+# Example environment
+environment = ["dirty", "clean", "dirty", "clean", "dirty"]
+vacuum = VacuumCleaner(environment)
+vacuum.run()
