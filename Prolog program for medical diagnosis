@@ -1,0 +1,66 @@
+% Define symptoms and their associations with conditions
+symptom(fever, cold).
+symptom(cough, cold).
+symptom(sneezing, cold).
+symptom(runny_nose, cold).
+symptom(headache, cold).
+
+% Diagnosis predicate
+diagnose(CandidateCondition) :-
+    findall(Symptom, symptom(Symptom, _), AllSymptoms),
+    ask_symptoms(AllSymptoms, Symptoms),
+    findall(Condition, (symptom(Symptom, Condition), member(Symptom, Symptoms)), PossibleConditions),
+    select_most_common(PossibleConditions, CandidateCondition).
+
+% Ask about symptoms
+ask_symptoms([], []).
+ask_symptoms([Symptom | RestSymptoms], [Symptom | SelectedSymptoms]) :-
+    write('Do you have '), write(Symptom), write('? (yes/no) '),
+    read(Response),
+    (Response = yes ; Response = y),
+    ask_symptoms(RestSymptoms, SelectedSymptoms).
+ask_symptoms([_ | RestSymptoms], SelectedSymptoms) :-
+    ask_symptoms(RestSymptoms, SelectedSymptoms).
+
+% Select the most common element from a list
+select_most_common([], _).
+select_most_common(List, MostCommon) :-
+    msort(List, SortedList),
+    group_sorted(SortedList, Grouped),
+    find_most_common(Grouped, MostCommon).
+
+% Group sorted elements
+group_sorted([], []).
+group_sorted([X], [X]).
+group_sorted([X, X | Rest], Grouped) :-
+    group_sorted([X | Rest], Grouped).
+group_sorted([X, Y | Rest], [X | GroupedRest]) :-
+    X \= Y,
+    group_sorted([Y | Rest], GroupedRest).
+
+% Find the most common element in a list
+find_most_common([(_, Element) | Rest], MostCommon) :-
+    count_occurrences(Rest, Element, 1, Count),
+    find_most_common(Rest, Element, 1, Count, MostCommon).
+
+find_most_common([], MostCommon, _, _, MostCommon).
+find_most_common([(_, Element) | Rest], _, CurrentMax, CurrentCount, MostCommon) :-
+    count_occurrences(Rest, Element, 1, Count),
+    (Count > CurrentCount ->
+        find_most_common(Rest, Element, Count, Count, MostCommon)
+    ;
+        find_most_common(Rest, MostCommon, CurrentMax, CurrentCount, MostCommon)
+    ).
+
+% Count occurrences of an element in a list
+count_occurrences([], _, Count, Count).
+count_occurrences([Element | Rest], Element, CurrentCount, NewCount) :-
+    NextCount is CurrentCount + 1,
+    count_occurrences(Rest, Element, NextCount, NewCount).
+count_occurrences([_ | Rest], Element, CurrentCount, NewCount) :-
+    count_occurrences(Rest, Element, CurrentCount, NewCount).
+
+% Example query
+/*
+?- diagnose(Condition).
+*/
