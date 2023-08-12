@@ -1,0 +1,28 @@
+% Defining facts in the database
+planet(mercury, rocky, 0.39, 0.24).
+planet(venus, rocky, 0.72, 0.62).
+planet(earth, rocky, 1.00, 1.00).
+planet(mars, rocky, 1.52, 0.11).
+planet(jupiter, gas_giant, 5.20, 317.8).
+planet(saturn, gas_giant, 9.58, 95.2).
+planet(uranus, ice_giant, 19.22, 14.6).
+planet(neptune, ice_giant, 30.05, 17.2).
+
+% Query to find the type of a planet
+planet_type(Name, Type) :-
+    planet(Name, Type, _, _).
+
+% Query to find the distance of a planet from the Sun
+planet_distance(Name, Distance) :-
+    planet(Name, _, Distance, _).
+
+% Query to find the mass of a planet compared to Earth's mass
+planet_mass(Name, Mass) :-
+    planet(Name, _, _, Mass).
+
+% Example queries
+/*
+?- planet_type(earth, Type).
+?- planet_distance(jupiter, Distance).
+?- planet_mass(neptune, Mass).
+*/
